@@ -40,6 +40,7 @@ What it sets up
 * Rails gem for writing web applications
 * Ruby stable for writing general-purpose code
 * RVM for managing versions of the Ruby programming language
+* SSH public key for authenticating with Github and Heroku
 
 It should take less than 15 minutes to install (depends on your machine).
 

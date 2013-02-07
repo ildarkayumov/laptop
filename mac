@@ -50,6 +50,9 @@ echo "Installing Postgres, a good open source relational database ..."
 # echo "Installing reattach-to-user-namespace, for copy-paste and RubyMotion compatibility with tmux ..."
 #   successfully brew install reattach-to-user-namespace
 
+echo "Installing autojump, for a faster way to navigate your filesystem ..."
+  successfully brew install autojump
+
 echo "Installing ImageMagick, for cropping and re-sizing images ..."
   successfully brew install imagemagick
 

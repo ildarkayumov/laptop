@@ -1,81 +1,80 @@
 #!/usr/bin/env zsh
 
 successfully() {
-  $* || (echo "failed" 1>&2 && exit 1)
+  $* || (echo "\nfailed" 1>&2 && exit 1)
 }
 
-echo "Checking for SSH key, generating one if it doesn't exist ..."
-  [[ -f ~/.ssh/id_rsa.pub ]] || ssh-keygen -t rsa
+fancy_echo() {
+  echo "\n$1"
+}
 
-echo "Copying public key to clipboard. Paste it into your Github account ..."
-  [[ -f ~/.ssh/id_rsa.pub ]] && cat ~/.ssh/id_rsa.pub | pbcopy
-  successfully open https://github.com/account/ssh
+if -f /etc/zshenv; then
+  fancy_echo "Fix OSX zsh environment bug ..."
+    successfully sudo mv /etc/{zshenv,zshrc}
+fi
 
-echo "Fixing permissions ..."
-  successfully sudo chown -R `whoami` /usr/local
-
-echo "Installing Homebrew, a good OS X package manager ..."
+fancy_echo "Install Homebrew, a good OS X package manager ..."
   successfully ruby <(curl -fsS https://raw.github.com/mxcl/homebrew/go)
   successfully brew update
 
-echo "Putting Homebrew location earlier in PATH ..."
-  successfully echo "
-# recommended by brew doctor
-export PATH='/usr/local/bin:$PATH'" >> ~/.zshenv
-  successfully source ~/.zshenv
+fancy_echo "Follow brew doctor recommendations ..."
+  successfully export PATH='/usr/local/bin:$PATH'
 
-echo "Installing GNU Compiler Collection and dependencies ..."
-  successfully brew tap homebrew/dupes
-  successfully brew install autoconf automake apple-gcc42
-
-echo "Installing libksba, readline and openssl recommended for Ruby 1.9.3 ..."
-  successfully brew install libksba readline openssl
-
-echo "Installing Postgres, a good open source relational database ..."
+fancy_echo "Install Postgres, a good open source relational database ..."
   successfully brew install postgres --no-python
   successfully initdb /usr/local/var/postgres -E utf8
 
-# echo "Installing Redis, a good key-value database ..."
-#   successfully brew install redis
+fancy_echo "Install Redis, a good key-value database ..."
+  successfully brew install redis
 
-# echo "Installing ack, for searching the contents of files ..."
-#   successfully brew install ack
+fancy_echo "Install The Silver Searcher (better than ack or grep) for searching the contents of files ..."
+  successfully brew install the_silver_searcher
 
-# echo "Installing ctags, for indexing files for vim tab completion of methods, classes, variables ..."
-#   successfully brew install ctags
-
-# echo "Installing tmux, for saving project state and switching between projects ..."
-#   successfully brew install tmux
-
-# echo "Installing reattach-to-user-namespace, for copy-paste and RubyMotion compatibility with tmux ..."
-#   successfully brew install reattach-to-user-namespace
-
-echo "Installing autojump, for a faster way to navigate your filesystem ..."
-  successfully brew install autojump
-
-echo "Installing ImageMagick, for cropping and re-sizing images ..."
+fancy_echo "Install ImageMagick, for cropping and re-sizing images ..."
   successfully brew install imagemagick
 
-echo "Installing QT, used by Capybara Webkit for headless Javascript integration testing ..."
+fancy_echo "Install QT, used by Capybara Webkit for headless Javascript integration testing ..."
   successfully brew install qt
 
-echo "Installing watch, used to execute a program periodically and show the output ..."
+fancy_echo "Install watch, used to execute a program periodically and show the output ..."
   successfully brew install watch
 
-echo "Installing rbenv and ruby-build ..."
-  successfully brew install rbenv ruby-build
+fancy_echo "Installing autojump, for a faster way to navigate your filesystem ..."
+  successfully brew install autojump
 
-echo "Installing Ruby 1.9.3-p327, which becomes the default ..."
-  successfully rbenv install 1.9.3-p327
+fancy_echo "Install rbenv for changing Ruby versions ..."
+  successfully brew install rbenv
 
-echo "Installing critical Ruby gems for Rails development ..."
-  successfully gem install bundler rails pg foreman thin --no-rdoc --no-ri
+fancy_echo "Enable shims and autocompletion ..."
+      successfully eval "$(rbenv init -)"
 
-echo "Installing standalone Heroku CLI client. You'll need administrative rights on your machine ..."
-  successfully curl -s https://toolbelt.heroku.com/install.sh | sh
+fancy_echo "Install rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries..."
+  successfully brew install rbenv-gem-rehash
 
-# echo "Installing the heroku-config plugin for pulling config variables locally to be used as ENV variables ..."
-#   successfully /usr/local/heroku/bin/heroku plugins:install git://github.com/ddollar/heroku-config.git
+fancy_echo "Install ruby-build for installing Rubies ..."
+  successfully brew install ruby-build
 
-echo "Your shell will now restart in order for changes to apply."
-  exec $SHELL -l
+fancy_echo "Install GNU Compiler Collection, a necessary prerequisite to installing Ruby ..."
+  successfully brew tap homebrew/dupes
+  successfully brew install apple-gcc42
+
+fancy_echo "Install Ruby 1.9.3-p392 ..."
+  CC=gcc-4.2 successfully rbenv install 1.9.3-p392
+
+fancy_echo "Set Ruby 1.9.3-p392 as global default Ruby ..."
+  successfully rbenv global 1.9.3-p392
+  successfully rbenv shell 1.9.3-p392
+
+fancy_echo "Update to latest Rubygems version ..."
+  successfully gem update --system
+
+fancy_echo "Install critical Ruby gems for Rails development ..."
+  successfully gem install bundler foreman pg rails thin --no-document
+
+fancy_echo "Install GitHub CLI client ..."
+  successfully gem install hub --no-document
+
+fancy_echo "Install Heroku CLI client ..."
+  successfully brew install heroku-toolbelt
+
+fancy_echo "Almost done. Right now install fs/dotfiles."

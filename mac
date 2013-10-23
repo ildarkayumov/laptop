@@ -58,9 +58,12 @@ fancy_echo "Install GNU Compiler Collection, a necessary prerequisite to install
 fancy_echo "Install Ruby 1.9.3-p448 ..."
   CC=gcc-4.2 successfully rbenv install 1.9.3-p448
 
-fancy_echo "Set Ruby 1.9.3-p448 as global default Ruby ..."
-  successfully rbenv global 1.9.3-p448
-  successfully rbenv shell 1.9.3-p448
+fancy_echo "Install Ruby 2.0.0-p247 ..."
+  CC=gcc-4.2 successfully rbenv install 2.0.0-p247
+
+fancy_echo "Set Ruby 2.0.0-p247 as global default Ruby ..."
+  successfully rbenv global 2.0.0-p247
+  successfully rbenv shell 2.0.0-p247
 
 fancy_echo "Update to latest Rubygems version ..."
   successfully gem update --system
